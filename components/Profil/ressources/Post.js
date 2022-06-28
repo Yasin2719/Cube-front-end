@@ -2,20 +2,60 @@ import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { ChatIcon, DotsHorizontalIcon, SwitchHorizontalIcon, TrashIcon, HeartIcon, ChatAlt2Icon } from "@heroicons/react/solid";
 import Comment from "../../comments"
-import { deleteRessource } from "../../../pages/api/ressource";
+import { deleteRessource, updateRessource } from "../../../pages/api/ressource";
 import Likers from "../../likers/liker";
 import { useRouter } from 'next/router';
+import { getCategorieById } from "../../../pages/api/categorie";
 
 export default function Post ({Post}){
     const [showComment, setShowComment] = useState(false);
     const [showLikers, setShowLikers] = useState(false);
     const router = useRouter();
     const [isRefreshing, setIsRefreshing] = useState(false);
+    const [categorie, setCategorie] = useState("")
+    const [updatePost, setUpdatePost] = useState(false);
+    const [input, setInput] = useState("")
+
+    const sendUpdate = async() =>{
+        if (!Cookies.get("userId")){
+            setLoading(false);
+            alert("utilisateur non connéctés");
+            window.location.href = '/Compte/SignIn';
+        }
+        else{
+            const userId = Cookies.get("userId");
+            console.log(Post._id, input);
+            const response = await updateRessource(Post._id, input)
+            .then((docs) => {
+                refreshData();
+                setUpdatePost(false)
+            })
+            .catch((err)=>(alert("error")));     
+        }
+    }
 
     const refreshData = () => {
         router.replace(router.asPath);
         setIsRefreshing(true);
       }
+
+      useEffect(()=>{
+        if(typeof Post.RessourceCategorieId !== "undefined" && Post.RessourceCategorieId !== "" && Post.RessourceCategorieId != "undefined"){
+            getCategorieLibelle(Post.RessourceCategorieId);
+        } 
+    })
+
+      const getCategorieLibelle = async(id) =>{
+        if (id !== "" && typeof id !== "undefined"){
+            const data = await getCategorieById(id)
+            .then((data) =>{
+            setCategorie(data.CategorieLibelle);
+            })
+            .catch(()=>{
+                // alert("error")
+            })
+        }
+    }
 
     const showChatRessource = () =>{
         if(typeof Cookies.get("userId") != "undefined"){
@@ -33,10 +73,10 @@ export default function Post ({Post}){
         }
     }
 
-    const test = () =>{
-        console.log("test likers");
-        console.log(Post.video, Post.photo);
-    }
+    // const test = () =>{
+    //     console.log("test likers");
+    //     console.log(Post.video, Post.photo);
+    // }
     return(
         <div className="p-3 flex cursor-pointer border-b border-gray">
             <div className="flex flex-col space-y-2 w-full">
@@ -51,7 +91,21 @@ export default function Post ({Post}){
                             {" "}
                         </span>
                         <p>{'\u00A0'}</p>
-                        <p className="text-gray text-[15px] sm:text-base mt-0.5 ml-2"> {Post.message}</p>
+                        {
+                            updatePost ? (
+                                <div>
+                                    <textarea value={input} rows="2" placeholder="What's happening ?" className="bg-transparent outline-none text-black text-lg placeholder-gray tracking-wide w-full min-h-[50px]" onChange={(e) => {
+                                        setInput(e.target.value)
+                                        }} />
+                                    <button className="bg-[#1DA1F2] text-white rounded-full px-4 py-1.5 font-bold shadow-md hover: bg-[#1a9cd8] disabled:hover:bg-[#1a8cd8] disabled:opacity-50 disabled:cursor-default" disabled={!input.trim()} onClick={()=>{sendUpdate()}}>Post</button>
+                                </div>
+                            ) : (
+                                <p className="text-gray text-[15px] sm:text-base mt-0.5 ml-2"> {Post.message}</p>
+                            )
+
+                            
+
+                        }
                         <p>{'\u00A0'}</p>
                         {/* {
                             Post.photo !== "" ? (
@@ -62,7 +116,10 @@ export default function Post ({Post}){
                         } */}
                         
                     </div>
-                    <div className="icon group flex-shrink-0 ml-auto">
+                    <div className="icon group flex-shrink-0 ml-auto" onClick={()=>{
+                        setUpdatePost(!updatePost)
+                        setInput(Post.message)
+                        }}>
                         <DotsHorizontalIcon className="h-5 text-gray group-hover:text-[#1DA1F2]" />
                     </div>
                 </div>
@@ -105,23 +162,6 @@ export default function Post ({Post}){
                                 title={video}
                             ></iframe>
                         </div>  */}
-                {
-                    Post.video ? (
-                        test()
-                    //     <div className="relative">
-                    //     <iframe
-                    //         src={Post.video}
-                    //         frameBorder="0"
-                    //         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    //         allowFullScreen
-                    //         title={video}
-                    //     ></iframe>
-                    // </div> 
-                    ) : (
-                        test()
-                        // <div></div>
-                    )
-                }
                 <div className={`text-[#6e767d] flex justify-between w-10/12`}>
                     <div className="flex items-center space-x-1 group" onClick={(e) => {
                         if(typeof Cookies.get("userId") != "undefined"){
@@ -208,6 +248,29 @@ export default function Post ({Post}){
                                     )
                                 }
                     </div>
+                    {
+                        categorie && (
+                            <div>
+                                <span>{categorie}</span>
+                            </div>
+                        )
+                    }
+
+                    {
+                        (Post.ressourceTypeRelation.length > 0) && (
+                            <div>
+                                <select onChange={(e) => (e.preventDefault())}>
+                                {
+                                    Post.ressourceTypeRelation.map((el) => (
+                                        <option>{el}</option>
+                                                            
+                                    ))
+                                }
+                            </select>
+                            </div>
+
+                        )
+                    }
                 </div>
                 {
                 showComment ? (

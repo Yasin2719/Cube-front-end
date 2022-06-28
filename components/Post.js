@@ -32,7 +32,7 @@ export default function Post ({id, Post, postPage}){
             setCategorie(data.CategorieLibelle);
             })
             .catch(()=>{
-                alert("error")
+                // alert("error")
             })
 
         }
@@ -269,6 +269,23 @@ export default function Post ({id, Post, postPage}){
                         )
                     }
 
+                    {
+                        (Post.ressourceTypeRelation.length > 0) && (
+                            <div>
+                                <select onChange={(e) => (e.preventDefault())}>
+                                {
+                                    Post.ressourceTypeRelation.map((el) => (
+                                        <option>{el}</option>
+                                                            
+                                    ))
+                                }
+                            </select>
+                            </div>
+
+                        )
+                    }
+
+
                 {
                     // !creator ? (
                     //     <div 
@@ -308,7 +325,7 @@ export default function Post ({id, Post, postPage}){
                         {
                             Post.comments.map((el)=>(
                                 <div className="flex justify-between w-full">
-                                    <Comment comment={el}/>
+                                    <Comment comment={el} idRessource={id}/>
                                 </div>                               
                             ))
                         }

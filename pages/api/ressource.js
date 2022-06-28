@@ -77,6 +77,20 @@ export const commentRessource = async (UserId, userPseudo, RessourceId, text) =>
     return result;
 }
 
+export const deleteCommentRessource = async (idRessource, idCommentaire) => {
+    const result = await api.patch(`/ressource/delete-comment-ressource/&${idRessource}`, {
+        commentId: idCommentaire
+    })
+    .then((res)=>{
+        console.log("succes");
+        return res;
+    })
+    .catch((error) => {
+        console.log("erreur");
+        return error
+    })
+}
+
 export const deleteRessource = async (RessourceId) =>{
     const result = await api.delete(`ressource/&${RessourceId}`);
     return result

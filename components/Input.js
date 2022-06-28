@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 export default function Input({categories}){
     const [input, setInput] = useState("");
     const [categorie, setCategorie] = useState("");
+    const [relation, setRelation] = useState("")
     const [selectedFile, setSelectedFile] = useState(null);
     const filePickerRef = useRef(null);
     const [file, setFile] = useState("");
@@ -87,6 +88,7 @@ export default function Input({categories}){
                 }else if(video) data.append("video", video)
                 else if (link) data.append("link", link) 
                 data.append("RessourceCategorieId", categorie)
+                data.append("ressourceTypeRelation", relation)
                 // data.append("ressourceStatut", "PUBLIC");
                 // data.append("likers", []);
                 // data.append("comments", []);
@@ -94,13 +96,13 @@ export default function Input({categories}){
                 const response = await postRessource(data)
                 .then((docs) => (refreshData()))
                 .catch((err)=>(console.log(err)));
-                alert("ok");
-                setLoading(false);
-                setInput("");
-                setSelectedFile(null);
-                setFile(null);
-                setVideo(null);
-                setLink(null);
+                // alert("ok");
+                // setLoading(false);
+                // setInput("");
+                // setSelectedFile(null);
+                // setFile(null);
+                // setVideo(null);
+                // setLink(null);
                 
             }
             else{
@@ -238,10 +240,14 @@ export default function Input({categories}){
                             </select>
                         </div>
                         <div className="p-2">
-                            <select name="TypeRelastion" >
+                            <select name="TypeRelastion" onChange={(e) => (setRelation(e.target.value))}>
                                 <option>Relation</option>
                                 <option>Soi</option>
-                                <option>En Famille</option>
+                                <option>Conjoints</option>
+                                <option>Famille</option>
+                                <option>Pofessionnel</option>
+                                <option>Amis</option>
+                                <option>Inconnus</option>
                             </select>
                         </div>
                         {showEmojis && (
