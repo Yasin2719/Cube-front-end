@@ -3,14 +3,24 @@ import Link from "next/link";
 import Layout from "../components/Layout/Layout"
 import { FaRegEnvelope} from "react-icons/fa";
 import { MdLockOutline} from "react-icons/md";
-import { useState } from 'react'
-
+import { useState, useEffect } from "react";
 import Head from "next/head";
 import Sidebar from "../components/Sidebar"
 import Feed from '../components/Feed';
 import { getRessources } from './api/ressource';
+import Cookies from 'js-cookie';
+import { useDispatch } from 'react-redux';
+import { getUser } from './api/users';
+import { getCategorie } from './api/categorie';
 
-export default function Home({ressources}){
+export default function Home({ressources, categories}){
+  const dispatch = useDispatch();
+  const [userId, setUserId] = useState("")
+  useEffect(() => {
+    setUserId(Cookies.get("userId"))
+    if(typeof Cookies.get("userId") !== "undefined") dispatch(getUser(Cookies.get("userId")))
+  }, [userId])
+
   return (
     <div>
       <Head>
@@ -19,8 +29,8 @@ export default function Home({ressources}){
       </Head>
 
       <main className="bg-white flex min-h-screen max-w-[1500px] mx-auto">
-        <Sidebar />
-        <Feed ressources={ressources}/>
+        <Sidebar activeLink={false}/>
+        <Feed ressources={ressources} categories={categories}/>
         {/*Widget*/}
 
         {/*Modal*/}
@@ -29,24 +39,18 @@ export default function Home({ressources}){
   )
 }
 
+
 export async function getStaticProps(){
 
-  console.log("statics props")
-  const response = await getRessources();
-  // const responseJson = await response.json();
-  console.log(response);
-  return {props: {ressources: response}}
 
-    // const options = {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify({query})  
-    //   }
-    // const response = await fetch('http://localhost:1337/graphql',options) 
-    // const responseJson = await response.json()
-    // return {props:{categories: responseJson.data.categories.data, bonbons: [] }}
+  const response = await getRessources();
+
+  const categories = await getCategorie()
+  console.log(categories.data);
+
+  return {props: {ressources: response, categories: categories}}
+
+
 }
 
 // export default function Home() {

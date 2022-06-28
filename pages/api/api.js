@@ -1,8 +1,6 @@
 import axios from "axios";
 
-console.log("entrer");
 let url = {dev: "http://localhost:3005/"};
-console.log(url.dev);
 const api = axios.create({
     withCredentials: true,
     baseURL: url.dev,

@@ -2,7 +2,8 @@ import { SparklesIcon, PlusIcon } from "@heroicons/react/solid"
 import Input from "./Input"
 import { useState } from "react";
 import Post from '../components/Post';
-export default function Feed({ressources}){
+import Cookies from "js-cookie";
+export default function Feed({ressources, categories}){
     const [showAddPost, setShowAddPost] = useState(false);
 
     return (
@@ -14,17 +15,25 @@ export default function Feed({ressources}){
                 </div>
             </div>
             {showAddPost && (
-               <Input /> 
+               <Input categories={categories}/> 
             )
             }
             <div className="pb-72">
-                {ressources.map((el)=>(
+                {ressources.data.map((el)=>(
                     <Post key={el._id} id={el._id} Post={el} PostPage={el.message}/>
                 ))
                 }
             </div>
-            <div className="absolute bg-[#1d9bf0] text-white hoverAnimation xl:ml-[720px] mb-8 hover:bg-white hover:text-[#1d9bf0]">
-                <PlusIcon className="h-12 hidden xl:inline" onClick={() =>{setShowAddPost(!showAddPost)}}/>
+            <div className="fixed bottom-3.5 right-1/3 bg-[#1d9bf0] text-white hoverAnimation xl:ml-[720px] hover:bg-white hover:text-[#1d9bf0]">
+                <PlusIcon className="h-12 hidden xl:inline" onClick={() =>{
+                    if(typeof Cookies.get("userId") != "undefined"){
+                        setShowAddPost(!showAddPost);
+                    }
+                    else{
+                        window.location.href = "/Compte/SignIn";
+                    }
+                    
+                    }}/>
             </div>
         </div>
     )

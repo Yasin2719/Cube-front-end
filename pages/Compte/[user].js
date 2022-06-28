@@ -1,8 +1,17 @@
+import Sidebar from "../../components/Sidebar"
 import Head from "next/head";
-import Sidebar from "../../components/Sidebar";
-import ProfilPanel from "../../components/ProfilPanel";
 
-export default function Profil(){
+
+// export async function getStaticProps({ params }) {
+//     const postData = await getPostData(params.id)
+//     return {
+//       props: {
+//         postData
+//       }
+//     }
+//   }
+
+export default function home(){
     return (
         <div>
         <Head>
@@ -10,8 +19,8 @@ export default function Profil(){
             <link rel="icon" href="/favicon.ico"></link>
         </Head>
         <main className="bg-white flex min-h-screen max-w-[1500px] mx-auto">
-            <Sidebar />
-            <ProfilPanel />
+            <Sidebar activeLink={true}/>
+            
             {/*Widget*/}
 
             {/*Modal*/}

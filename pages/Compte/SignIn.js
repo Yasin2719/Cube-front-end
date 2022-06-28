@@ -8,6 +8,7 @@ import { signin } from "../api/users";
 import { useField } from 'formik';
 import { TextInput } from '../../components/Login/TextInput';
 import {Formik, Form} from 'formik';
+import Cookies from "js-cookie";
 
 export default function Home() {
 
@@ -45,61 +46,29 @@ export default function Home() {
     const pwd = password;
     console.log(mail, pwd);
     if (mail == "" || pwd == ""){
-      console.log("un champ est manquant");
+      // console.log("un champ est manquant");
       alert("un champ est manquant");
       document.getElementById('error').innerHTML = "un champ est manquant";
-      console.log(document.getElementById('error').innerHTML);
+      // console.log(document.getElementById('error').innerHTML);
     }
     else{
       document.getElementById('error').innerHTML = "";
     }
-    const response = await signin(mail, pwd);
-    console.log("connecter");
-    console.log(response)
-    // const body = 
-    // `{
-    //   "userMail": "ilyesnzl27@gmail.com",
-    //   "userPassword": "azerty"
-    // }`
-    // const options = {
-    //   method: 'POST',
-    //   headers: `{
-    //     Access-Control-Allow-Origin: http://localhost:3005,
-    //     Accept: */*,
-    //     Host: localhost,
-    //     Accept-Encoding: gzip, deflate, br,
-    //     Access-Control-Allow-Origin: *,
-    //     Content-Type: 'application/json',
-    //   }`,
-    //   body: JSON.stringify(body),
-    //   // mode: 'cors'
-    // }
-    // console.log(options, body)
-    // const response = await fetch('http://localhost:3005/user/signin',options /*{headers: options, method: 'POST', body: JSON.parse(body)}*/ );
-    // console.log(response)
-    // const responseJson = await response.json()
-    // {
-    //   //mode: 'cors',
-    //   method: 'POST',
-    //   credentials: 'include',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Accept-Encoding': 'gzip, deflate, br',
-    //     'Access-Control-Allow-Origin':  'http://localhost:3005',
-    //     'Access-Control-Allow-Methods':' POST',
-    //     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    //     'Accept': '*/*',
-
-    //   },
-    //   body: 
-    //   {
-    //     "userMail": "ilyesnzl27@gmail.com",
-    //     "userPassword": "azerty"
-    //   }
-    // }
-    // );
-    // const data = await response.json();
-    // console.log(responseJson);
+    const response = await signin(mail, pwd)
+    .then((result)=>{
+      console.log(result);
+      if(alert("Ok")){
+        console.log("yes");
+      }
+      let idUser = result.data.data;
+      // console.log(idUser);
+      // localStorage.setItem('OnlineUserId', idUser);
+      Cookies.set("userId", idUser);
+      // Cookies.set("userName", )
+      // console.log(Cookies.get("userId"));
+      window.location.href = "/";
+    })
+    .catch((err)=>(console.log(err)));
   }
 
   return (
@@ -141,10 +110,10 @@ export default function Home() {
                       </div>
                       <label id="error" name="error" className="text-red-400 my-3"></label>
                       <div className="items-center">
-                        <Link href="/Acceuil">
+                        {/* <Link href="/Acceuil">
                           <a className="bg-[#1DA1F2] border-2 border-[#1DA1F2] text-white rounded-full px-12 py-2 inline-block font-semibold">Connexion</a>
-                        </Link>
-                        <button type='submit' onClick={submitUser} className="bg-[#1DA1F2] border-2 border-blue-700 text-white rounded-full px-12 py-2 inline-block font-semibold">Connexion</button>
+                        </Link> */}
+                        <button type='submit' onClick={submitUser} className="bg-[#1DA1F2] border-2 border-[#1DA1F2] text-white rounded-full px-12 py-2 inline-block font-semibold">Connexion</button>
                       </div>
                     {/* </Form>
                   )}
