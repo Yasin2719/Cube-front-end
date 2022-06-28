@@ -48,8 +48,8 @@ export default function Post ({id, Post, postPage}){
         setLikes(Post.likers);
         setNbLike(Post.likers.length)
         if(typeof Post.RessourceCategorieId !== "undefined" && Post.RessourceCategorieId !== "" && Post.RessourceCategorieId != "undefined"){
-            // getCategorieLibelle(Post.RessourceCategorieId);
-            console.log(Post.RessourceCategorieId);
+            getCategorieLibelle(Post.RessourceCategorieId);
+            // console.log(Post.RessourceCategorieId);
         } 
         // console.log(Post._id);
         // console.log("Cookie userId: ",Cookies.get("userId"));
