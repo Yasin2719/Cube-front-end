@@ -17,6 +17,7 @@ export default function Post ({id, Post, postPage}){
     const [isRefreshing, setIsRefreshing] = useState(false);
     let UserId = ""
     const [categorie, setCategorie] = useState("")
+    const [openModal, setOpenModal] = useState(false)
 
     const refreshData = () => {
         // router.replace(router.asPath);
